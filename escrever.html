@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Orqut</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #edf3f8
+        }
+
+        header {
+            background: #bfd6f0;
+            padding: 10px 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center
+        }
+
+        .logo {
+            font-size: 48px;
+            color: #ea4c89;
+            font-weight: bold
+        }
+
+        .menu a {
+            background: #8eb2de;
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            margin-right: 6px;
+            font-size: 13px
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 15px auto;
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 15px
+        }
+
+        .box {
+            background: #fff;
+            border: 1px solid #d7d7d7
+        }
+
+        .profile,
+        .main {
+            padding: 15px
+        }
+
+        .photo {
+            height: 250px;
+            border: 1px solid #d7d7d7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999
+        }
+
+        .toolbar {
+            border: 1px solid #d7d7d7;
+            border-bottom: none;
+            padding: 8px
+        }
+
+        .editor,
+        .input {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #d7d7d7
+        }
+
+        .editor {
+            height: 180px
+        }
+
+        .input {
+            padding: 8px;
+            margin: 10px 0
+        }
+
+        .actions {
+            text-align: right;
+            margin-top: 10px
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">Orqut</div>
+        <nav class="menu">
+            <a href="index.html">Início</a>
+            <a href="escrever.html">Scraps</a>
+            <a href="depoimentos.html">Depoimentos</a>
+        </nav>
+    </header>
+    <div class="container">
+        <aside class="box profile">
+            <div class="photo">Foto da Bárbara</div>
+            <h3>Bárbara</h3>
+            <p>Aniversário Anos 2000 ✨</p>
+        </aside>
+        <section class="box main">
+            <h3>Escrever um depoimento para: <span style="background:#eee;padding:3px 6px">BÁRBARA</span></h3><input
+                id="nome" class="input" placeholder="Seu nome">
+            <div class="toolbar"><b>B</b> <i>I</i> U 😊 🖼️</div><textarea id="mensagem" class="editor"></textarea>
+            <div class="actions"><button id="cancelar">cancelar</button> <button id="enviar">postar</button></div>
+            <div id="status"></div>
+        </section>
+    </div>
+    <script
+        type="module">import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js'; import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js'; const db = getFirestore(initializeApp({ apiKey: "AIzaSyBxgYlu0_t9wcz04mvtJQF-mNsXPEQx58c", authDomain: "aniversario-barbara.firebaseapp.com", projectId: "aniversario-barbara", storageBucket: "aniversario-barbara.firebasestorage.app", messagingSenderId: "463937461649", appId: "1:463937461649:web:bad385e13d4fc4b9214e30" })); cancelar.onclick = () => { nome.value = ''; mensagem.value = '' }; enviar.onclick = async () => { if (!nome.value || !mensagem.value) { status.innerHTML = '<span style="color:red">Preencha todos os campos.</span>'; return; } try { await addDoc(collection(db, 'depoimentos'), { nome: nome.value, mensagem: mensagem.value, criadoEm: serverTimestamp() }); status.innerHTML = '<span style="color:green">Depoimento enviado! 💕</span>'; nome.value = ''; mensagem.value = ''; } catch (e) { status.innerHTML = '<span style="color:red">Erro ao enviar.</span>'; } }</script>
+</body>
+
+</html>

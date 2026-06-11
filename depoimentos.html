@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Orqut - Depoimentos</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #edf3f8
+        }
+
+        header {
+            background: #bfd6f0;
+            padding: 10px 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center
+        }
+
+        .logo {
+            font-size: 48px;
+            color: #ea4c89;
+            font-weight: bold
+        }
+
+        .menu a {
+            background: #8eb2de;
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            margin-right: 6px;
+            font-size: 13px
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 15px auto;
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 15px
+        }
+
+        .box {
+            background: #fff;
+            border: 1px solid #d7d7d7
+        }
+
+        .profile,
+        .main {
+            padding: 15px
+        }
+
+        .photo {
+            height: 250px;
+            border: 1px solid #d7d7d7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999
+        }
+
+        .depoimento {
+            border-top: 1px solid #ddd;
+            padding: 15px 0
+        }
+
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            color: #777;
+            font-size: 12px
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">Orqut</div>
+        <nav class="menu">
+            <a href="index.html">Início</a>
+            <a href="escrever.html">Scraps</a>
+            <a href="depoimentos.html">Depoimentos</a>
+        </nav>
+    </header>
+    <div class="container">
+        <aside class="box profile">
+            <div class="photo">Foto da Bárbara</div>
+            <h3>Bárbara</h3>
+            <p>Aniversário Anos 2000 ✨</p>
+            <p><strong>Depoimentos:</strong> <span id="contador">0</span></p>
+        </aside>
+        <section class="box main">
+            <h2>Depoimentos para Bárbara</h2>
+            <div id="lista">Carregando...</div>
+        </section>
+    </div>
+    <script
+        type="module">import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js'; import { getFirestore, collection, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js'; const db = getFirestore(initializeApp({ apiKey: "AIzaSyBxgYlu0_t9wcz04mvtJQF-mNsXPEQx58c", authDomain: "aniversario-barbara.firebaseapp.com", projectId: "aniversario-barbara", storageBucket: "aniversario-barbara.firebasestorage.app", messagingSenderId: "463937461649", appId: "1:463937461649:web:bad385e13d4fc4b9214e30" })); onSnapshot(query(collection(db, 'depoimentos'), orderBy('criadoEm', 'desc')), snap => { contador.textContent = snap.size; lista.innerHTML = ''; snap.forEach(doc => { const d = doc.data(); const data = d.criadoEm?.toDate ? d.criadoEm.toDate().toLocaleString('pt-BR') : 'Agora'; lista.innerHTML += `<div class="depoimento"><div class="meta"><strong>${d.nome}</strong><span>${data}</span></div><p>${d.mensagem.replace(/</g, '&lt;')}</p></div>` }) }, e => lista.innerHTML = 'Erro ao carregar depoimentos');</script>
+</body>
+
+</html>
