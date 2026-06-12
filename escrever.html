@@ -107,16 +107,129 @@
             <h3>Bárbara</h3>
             <p>Aniversário Anos 2000 ✨</p>
         </aside>
-        <section class="box main">
-            <h3>Escrever um depoimento para: <span style="background:#eee;padding:3px 6px">BÁRBARA</span></h3><input
-                id="nome" class="input" placeholder="Seu nome">
-            <div class="toolbar"><b>B</b> <i>I</i> U 😊 🖼️</div><textarea id="mensagem" class="editor"></textarea>
-            <div class="actions"><button id="cancelar">cancelar</button> <button id="enviar">postar</button></div>
-            <div id="status"></div>
-        </section>
+        ```html
+<section class="box main">
+    <h3>
+        Escrever um depoimento para:
+        <span style="background:#eee;padding:3px 6px">BÁRBARA</span>
+    </h3>
+
+    <input
+        id="nome"
+        class="input"
+        placeholder="Seu nome"
+        maxlength="50">
+
+    <div class="toolbar">
+        <b>B</b> <i>I</i> U 😊 🖼️
     </div>
-    <script
-        type="module">import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js'; import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js'; const db = getFirestore(initializeApp({ apiKey: "AIzaSyBxgYlu0_t9wcz04mvtJQF-mNsXPEQx58c", authDomain: "aniversario-barbara.firebaseapp.com", projectId: "aniversario-barbara", storageBucket: "aniversario-barbara.firebasestorage.app", messagingSenderId: "463937461649", appId: "1:463937461649:web:bad385e13d4fc4b9214e30" })); cancelar.onclick = () => { nome.value = ''; mensagem.value = '' }; enviar.onclick = async () => { if (!nome.value || !mensagem.value) { status.innerHTML = '<span style="color:red">Preencha todos os campos.</span>'; return; } try { await addDoc(collection(db, 'depoimentos'), { nome: nome.value, mensagem: mensagem.value, criadoEm: serverTimestamp() }); status.innerHTML = '<span style="color:green">Depoimento enviado! 💕</span>'; nome.value = ''; mensagem.value = ''; } catch (e) { status.innerHTML = '<span style="color:red">Erro ao enviar.</span>'; } }</script>
+
+    <textarea
+        id="mensagem"
+        class="editor"
+        maxlength="500"
+        placeholder="Escreva uma mensagem especial para a Bárbara..."></textarea>
+
+    <div class="actions">
+        <button type="button" id="cancelar">cancelar</button>
+        <button type="button" id="enviar">postar</button>
+    </div>
+
+    <div id="status"></div>
+</section>
+</div>
+
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js';
+    import {
+        getFirestore,
+        collection,
+        addDoc,
+        serverTimestamp
+    } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js';
+
+    // Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBxgYlu0_t9wcz04mvtJQF-mNsXPEQx58c",
+        authDomain: "aniversario-barbara.firebaseapp.com",
+        projectId: "aniversario-barbara",
+        storageBucket: "aniversario-barbara.firebasestorage.app",
+        messagingSenderId: "463937461649",
+        appId: "1:463937461649:web:bad385e13d4fc4b9214e30"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Elementos da página
+    const nomeInput = document.getElementById('nome');
+    const mensagemInput = document.getElementById('mensagem');
+    const statusDiv = document.getElementById('status');
+    const enviarBtn = document.getElementById('enviar');
+    const cancelarBtn = document.getElementById('cancelar');
+
+    // Botão cancelar
+    cancelarBtn.addEventListener('click', () => {
+        nomeInput.value = '';
+        mensagemInput.value = '';
+        statusDiv.innerHTML = '';
+    });
+
+    // Botão postar
+    enviarBtn.addEventListener('click', async () => {
+
+        const nome = nomeInput.value.trim();
+        const mensagem = mensagemInput.value.trim();
+
+        // Validação
+        if (!nome || !mensagem) {
+            statusDiv.innerHTML =
+                '<span style="color:red">Preencha todos os campos.</span>';
+            return;
+        }
+
+        // Impede múltiplos cliques
+        enviarBtn.disabled = true;
+        enviarBtn.textContent = 'postando...';
+
+        try {
+
+            // Salva no Firebase
+            await addDoc(collection(db, 'depoimentos'), {
+                nome,
+                mensagem,
+                criadoEm: serverTimestamp()
+            });
+
+            // Feedback visual
+            statusDiv.innerHTML =
+                '<span style="color:green;font-weight:bold;">Depoimento enviado com sucesso! 💕</span>';
+
+            // Limpa os campos
+            nomeInput.value = '';
+            mensagemInput.value = '';
+
+            // Atualiza botão
+            enviarBtn.textContent = 'postado ✓';
+
+            // Volta ao normal após 2 segundos
+            setTimeout(() => {
+                enviarBtn.disabled = false;
+                enviarBtn.textContent = 'postar';
+            }, 2000);
+
+        } catch (error) {
+
+            console.error('Erro ao enviar:', error);
+
+            statusDiv.innerHTML =
+                '<span style="color:red">Erro ao enviar. Tente novamente.</span>';
+
+            enviarBtn.disabled = false;
+            enviarBtn.textContent = 'postar';
+        }
+    });
+</script>
 </body>
 
 </html>
